@@ -1,0 +1,3 @@
+[submodule "pandoc-slides"]
+	path = pandoc-slides
+	url = git@gist.github.com:c02ed8770e013c25ce1f2017df3c9026.git

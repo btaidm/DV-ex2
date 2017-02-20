@@ -11,10 +11,10 @@ all : $(MD) $(SLIDES) $(HANDOUTS)
 	rm $@.tmp
 
 %.md.slides.pdf : $(MD)
-	pandoc $^ -t beamer --highlight-style kate --slide-level 2 -o $@
+	pandoc $^ -t beamer --latex-engine=xelatex --highlight-style kate --slide-level 2 -o $@
 
 %.md.handout.pdf : $(MD)
-	pandoc $^ -t beamer --highlight-style kate --slide-level 2 -V handout -o $@ 
+	pandoc $^ -t beamer --latex-engine=xelatex --highlight-style kate --slide-level 2 -V handout -o $@ 
 	pdfnup $@ --nup 1x2 --no-landscape --keepinfo \
 		--paper letterpaper --frame true --scale 0.9 \
 		--suffix "nup"

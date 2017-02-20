@@ -9,7 +9,12 @@ weights = cumsum(weights)
 DataFrame(A1=weights[1],A2=weights[2],A3=weights[3],A4=weights[4],A5=weights[5])
 end
 
-# s = scaledData
-# s[1] = map(string,s[1])
-# bar(s,:variable,keys(s.colindex)[end:-1:2])
-# plot!(s,:variable,keys(s.colindex)[end:-1:2])
+
+function makeBarChart()
+    s = scaledData
+    s[1] = map(string,s[1])
+
+    p = bar(s,:variable,keys(s.colindex)[end:-1:2])
+    plot!(p, s,:variable,keys(s.colindex)[end:-1:2])
+    return p
+end

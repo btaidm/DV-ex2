@@ -1,6 +1,8 @@
 using Plots, DataFrames, ExcelReaders, StatPlots, StatsBase
 data = readxlsheet(DataFrame,"Evaluation-Table.xlsx","Sheet1")
-stackedData = stack(data[2:end])
+data[:User] = map(Int,data[:User])
+stackedData = stack(data,2:15,1)
+stackedData[:variable] = map(string,stackedData[:variable])
 
 scaledData = by(stackedData,:variable) do df
 h = fit(Histogram,df[2],[0,1,2,3,4,5])

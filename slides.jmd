@@ -3,9 +3,10 @@
 ```{julia; echo=false;results="hidden"}
 
 using Plots, DataFrames, ExcelReaders, StatPlots, StatsBase
-pyplot();
 data = readxlsheet(DataFrame,"Evaluation-Table.xlsx","Sheet1")
-stackedData = stack(data[2:end])
+data[:User] = map(Int,data[:User])
+stackedData = stack(data,2:15,1)
+stackedData[:variable] = map(string,stackedData[:variable])
 
 scaledData = by(stackedData,:variable) do df
 h = fit(Histogram,df[2],[0,1,2,3,4,5])
@@ -52,9 +53,17 @@ for c in -1:length(usedData[1])
 		elseif c == 0
 			print(repeat("-",length("$i"))*"|")
 		else 
-			if isa(usedData[c,i], Symbol)
+			if isa(usedData[c,i], String)
 				print("$(usedData[c,i])|")
 			else
+				x = usedData[c,i]
+				if i == :Mean || i == :Mode || i == :Median
+					if x > 3
+						print("\\cellcolor{green!$(round(Int,(x-3)/(5-3)*50))}")
+					else
+						print("\\cellcolor{red!$(50 - round(Int,((x-1)/(3-1)*50)))}")
+					end
+				end
 				@printf "%1.2f|" usedData[c,i]
 			end
 		end
@@ -74,19 +83,17 @@ println("Table: Stats of Questionnaire")
 
 ```{julia;echo=false; fig_cap="Box Plot"; label="bp1"; fig_width=7; fig_height=3}
 s = stackedData
-s[1] = map(string,s[1])
 
-boxplot(s,:variable,keys(s.colindex)[2:end],fillalpha=0.7, fillcolor=:orange)
+boxplot(s,:variable,:value,keys(s.colindex)[2:end],fillalpha=0.3, fillcolor=:orange)
 plot!(size=(1000,500))
 plot!(grid=false)
 plot!(leg=false)
 ```
 
-## Parallel Coordinates
+## Parallel Bar Chart
 
 ```{julia;echo=false; fig_cap="Question Parallel Bar Chart"; label="pbc1"; fig_width=7; fig_height=3}
 s = scaledData
-s[1] = map(string,s[1])
 
 bar(s,:variable,keys(s.colindex)[end:-1:2], bar_width=0.7)
 plot!(s,:variable,keys(s.colindex)[end:-1:2], linewidth=2, linecolor=:black)
@@ -98,7 +105,37 @@ plot!(grid=false)
 
 \note{}
 
+## Question Parallel Coordinates
 
+```{julia;echo=false; fig_cap="Parallel Coordinates"; label="pc1"; fig_width=7; fig_height=3}
+plot()
+for b in groupby(data,:User)
+	c = stack(b,2:15)
+	c[:variable] = map(string,c[:variable])
+	plot!(c,:variable,:value,linealpha=.2, linecolor=:black)
+end
+
+
+
+plot!(leg=false,grid=false)
+plot!(xlabel = "Question", ylabel = "Score")
+```
+
+## User Parallel Coordinates
+
+```{julia;echo=false; fig_cap="Parallel Coordinates"; label="pc2"; fig_width=7; fig_height=3}
+plot()
+for b in groupby(stackedData,:variable)
+	plot!(b,:User,:value,linealpha=.2, linecolor=:black)
+end
+
+
+
+plot!(leg=false,grid=false)
+plot!(xlabel = "User", ylabel = "Score")
+```
+
+\note{}
 
 ## About the software
 

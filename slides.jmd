@@ -31,7 +31,7 @@ end
 
 - Which feature is most useful
 - Which feature is least useful
-
+- Distrubution of User Votes
 \note{}
 
 ## Useful Stats
@@ -59,9 +59,9 @@ for c in -1:length(usedData[1])
 				x = usedData[c,i]
 				if i == :Mean || i == :Mode || i == :Median
 					if x > 3
-						print("\\cellcolor{green!$(round(Int,(x-3)/(5-3)*50))}")
-					else
-						print("\\cellcolor{red!$(50 - round(Int,((x-1)/(3-1)*50)))}")
+						print("\\cellcolor{green!$(round(Int,(x-3)/(5-3)*50) + 50)}")
+					elseif x < 3
+						print("\\cellcolor{red!$(100 - round(Int,((x-1)/(3-1)*50)))}")
 					end
 				end
 				@printf "%1.2f|" usedData[c,i]
